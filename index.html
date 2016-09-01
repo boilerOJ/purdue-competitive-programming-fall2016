@@ -124,33 +124,34 @@ var series = {
         "description": "This is the first session in the training series.    This session is meant to familiarize with the UVa Online Judge and uHunt.    The problems in this session do not require advanced data structures and/or algorithms.  The problem set is listed on the table on right. Click on the problem number to see the problem statement.<br><br>  Please read <a href=\"https://sites.google.com/site/stevenhalim/\" target=\"_blank\">Competitive Programming 3 text book</a>   if you are struggling to solve these problems.<br>",
         "prev_hints": "",
         "problems": [
-          10082,
-          10189,
-          10443,
-          10812,
-          10919,
-          11221,
-          11727,
-          11764,
-          12085,
-          12403,
-        ]
+          {id: "10082", hint: ""},
+          {id: "10443", hint: ""},
+          {id: "10812", hint: ""},
+          {id: "10919", hint: ""},
+          {id: "11221", hint: ""},
+          {id: "11727", hint: ""},
+          {id: "11764", hint: ""},
+          {id: "12085", hint: ""},
+          {id: "12403", hint: ""},
+        ],
     },
     {
         "start_ts": 1472597599000,
         "end_ts": 1572597599000,
         "title": "Data Structures and Libraries",
-        "description": "Welcome to the second session in the training series.    This session focus on problems that can be easily solved using existing libraries in C++/Java/Python.<br/<br/>",
+        "description": "Welcome to the second session in the training series.    This session focus on problems that can be easily solved using existing libraries in C++/Java/Python.<br/><br>Union-Find Disjoint Set library: <a href='https://github.com/luisfcofv/competitive-programming-book/blob/master/ch2/ch2_08_unionfind_ds.java'>Java</a> <a href='https://github.com/luisfcofv/competitive-programming-book/blob/master/ch2/ch2_08_unionfind_ds.cpp'>C++</a></br>",
         "problems": [
-          10226,
-          11988,
-          11995,
-          11849,
-          10107,
-          11286,
-          793,
-          732,
-        ]
+          {id: "10226", hint: "Use some sort of hashmap to store the # of each tree encountered, then iterate in alphabetic order and print out the frequency as a percent (use printf to format the float)"},
+          {id: "11849", hint: "Add N numbers to a HashSet, then check how many of the M numbers are in the set"},
+          {id: "10107", hint: "Keep adding numbers to an ArrayList (or other collection), then sort and return the median. This doesn't TLE even though its really slow"},
+          {id: "11286", hint: "Use a HashMap to keep track of the frequencies"},
+          {id: "11988", hint: "Iterate left to right, storing each character in a linked list. If you see a [, then go to the front of the linked list, if you see a ] then go to the end"},
+          {id: "11995", hint: "Create a stack, queue, and priority queue. Perform all operations on all 3, and keep track of errors/resulting values. There are some edge cases."},
+          {id: "793", hint: "Add each pair to the Disjoint Set for c pairs, check if pair is in the disjoint set for q pairs"},
+          {id: "732", hint: "Use a Stack to simulate the process"},
+          {id: "11966", hint: ""},
+          {id: "1232", hint: ""},
+        ],
     },
 ]
 }
@@ -161,7 +162,9 @@ var uhunt_series = (function (){
   var widget = {
     problems: function(problems){
       var res = '';
-      $.each(problems, function (i, num) {
+      $.each(problems, function (i, dict) {
+        var num = dict.id;
+        var hint = dict.hint;
         var p = uhunt.probs.num(num);
         if (!p) return false;
         res += '<tr>' +
@@ -170,7 +173,7 @@ var uhunt_series = (function (){
           '<td align=center>' + uhunt.probs.level(p.dacu) +
           '<td align=center><span id="session-ac-' + num + '">0</span>'+
           '<td align=center><span id="session-nos-' + num + '">0</span>' +
-          '<td align=center><span id="session-hint-' + num + '">~</span>';
+          '<td align=center><span title="' + hint +  '"id="session-hint-' + num + '">' + (hint != "" ? 'hint' : '') + '</span>';
       });
 
       return '<table cellspacing=0 cellpadding=2 \
@@ -204,7 +207,7 @@ blue 258637\n\n\
         <th width="80">Solved';
       var ser = series.series[series_index];
       for (var i = 0; i < ser.problems.length; i++) {
-        ptr += '<th>' + uhunt.tpl.problem_link(uhunt.probs.num(ser.problems[i]));
+        ptr += '<th>' + uhunt.tpl.problem_link(uhunt.probs.num(ser.problems[i].id));
       }
       var conf = uhunt.db.get('uhunt_series_filter_uids');
       return '\
@@ -271,7 +274,8 @@ blue 258637\n\n\
     $.each(series.series, function (i, ser){
       ser.start_sbt = uhunt.util.to_uts(ser.start_ts);
       ser.end_sbt = uhunt.util.to_uts(ser.end_ts);
-      $.each(ser.problems, function (j, num){
+      $.each(ser.problems, function (j, dict){
+        var num = dict.id;
         var pid = uhunt.probs.num(num).pid;
         if (!interesting_pids[pid]) {
           interesting_pids[pid] = [];
@@ -474,7 +478,8 @@ blue 258637\n\n\
   function load_problems() {
     var all_ok = true;
     $.each(series.series, function (series_index, ser) {
-      $.each(ser.problems, function (i,num) {
+      $.each(ser.problems, function (i,dict) {
+        var num = dict.id;
         if (!uhunt.probs.num(num)) return all_ok = num;
       });
     });
@@ -530,7 +535,7 @@ blue 258637\n\n\
         var u = users[uid], nac = 0, pen = 0, row = '';
         if (filter && !filter_uids[uid]) continue;
         for (var i = 0; i < ser.problems.length; i++) {
-          var num = ser.problems[i];
+          var num = ser.problems[i].id;
           var p = u.stats(uhunt.probs.num(num).pid);
           if (!acnos[num]) acnos[num] = { ac: 0, nos: 0 };
           else {
@@ -576,7 +581,7 @@ blue 258637\n\n\
 
     this.load = function(cb) {
       var pids = [], thisRef = this, t1 = uhunt.util.time();
-      $.each(ser.problems, function (i, num) { pids.push(uhunt.probs.num(num).pid); });
+      $.each(ser.problems, function (i, dict) { pids.push(uhunt.probs.num(dict.id).pid); });
       uhunt.rpc.psubs(pids, uhunt.util.to_uts(ser.start_ts), uhunt.util.to_uts(ser.end_ts), function (arr) {
         var t2 = uhunt.util.time();
         arr.sort(sbt_cmp);
