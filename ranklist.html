@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+
+function ajax(api_url, result_callback) {
+  var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+  xhr.onload = function() {
+    if (xhr.readyState == 4) {
+      if (xhr.status == 200) {
+        var data = JSON.parse(xhr.responseText);
+        result_callback(data);
+      } else {
+        console.error(xhr.statusText);
+      }
+    }
+  }
+  xhr.open("GET", api_url, true);
+  xhr.onerror = function (e) { console.error(xhr.statusText); };
+  xhr.send();
+}
+
+function uhunt_api_ranklist(uid, result_callback) {
+  ajax("http://uhunt.felix-halim.net/api/ranklist/" + uid + "/0/0", result_callback);
+}
+
+function render() {
+  var uva_ids = [ 258637, 623585, 212921, 747715 ];
+  var ranklists = [];
+
+  uva_ids.forEach(function (uid) {
+    uhunt_api_ranklist(uid, function (user_ranklist) {
+      ranklists.push(user_ranklist[0]);
+
+      if (ranklists.length != uva_ids.length) return;
+
+      ranklists.sort(function (userA, userB) {
+        return userB.ac - userA.ac; 
+      });
+
+      var html = "";
+      for (var i = 0; i < ranklists.length; i++) {
+        var user = ranklists[i];
+        html += "<tr><td><a href='http://uhunt.felix-halim.net/id/" + user.userid + "'>" +  user.name + " (" + user.username + ")</a><td>"  + user.ac;
+      }
+      document.getElementById("h").innerHTML = html;
+    });
+  });
+}
+</script>
+</head>
+
+<body onload="render()">
+<table border="1" cellpadding="5">
+<thead><tr><th>Name (username)</th><th>Number of Solved</th></tr></thead>
+<tbody id="h"></tbody>
+</table>
