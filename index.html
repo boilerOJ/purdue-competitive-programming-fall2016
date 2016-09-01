@@ -118,8 +118,8 @@ var series = {
   "created_ts": 3423423,
   "series": [
     {
-        "start_ts": 1452217599000,
-        "end_ts": 1572597599000,
+        "start_ts": 1472166200000,
+        "end_ts": 1473597599000,
         "title": "Warming Up - Ad Hoc Problems",
         "description": "This is the first session in the training series.    This session is meant to familiarize with the UVa Online Judge and uHunt.    The problems in this session do not require advanced data structures and/or algorithms.  The problem set is listed on the table on right. Click on the problem number to see the problem statement.<br><br>  Please read <a href=\"https://sites.google.com/site/stevenhalim/\" target=\"_blank\">Competitive Programming 3 text book</a>   if you are struggling to solve these problems.<br>",
         "prev_hints": "",
@@ -169,7 +169,8 @@ var uhunt_series = (function (){
           '<td> &nbsp;<span style="float:right; padding-right:8px;">' + uhunt.tpl.problem_title(p.pid,p.tit,130 - (uhunt.algorithmist.exists(p.num)? 20 : 0)) + 
           '<td align=center>' + uhunt.probs.level(p.dacu) +
           '<td align=center><span id="session-ac-' + num + '">0</span>'+
-          '<td align=center><span id="session-nos-' + num + '">0</span>';
+          '<td align=center><span id="session-nos-' + num + '">0</span>' +
+          '<td align=center><span id="session-hint-' + num + '">~</span>';
       });
 
       return '<table cellspacing=0 cellpadding=2 \
@@ -180,6 +181,7 @@ style="border: 1px solid #bbb; font-size:13px; font-family:verdana">\
   <th width=60>Difficulty\
   <th width=70>AC\
   <th width=70>NOS\
+  <th width=70>Hint\
 <tbody class="alt_colors">'+res+'</tbody></table>';
     },
 
