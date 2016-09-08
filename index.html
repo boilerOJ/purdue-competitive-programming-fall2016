@@ -320,7 +320,7 @@ blue 258637\n\n\
     else if (ser.end_sbt < c) status = 'Contest has ended';
     else {
       var t = uhunt.tpl.format_time_v(ser.end_sbt - c, 1);
-      if (t===false) status = 'Contest end date: ' + uhunt.tpl.format_date(ser.end_sbt);
+      if (t===false) status ='Contest start date: ' + uhunt.tpl.format_date(ser.start_sbt) + '-' + 'Contest end date: ' + uhunt.tpl.format_date(ser.end_sbt);
       else status = 'Time remaining: <font color=yellow>' + t + '</font>';
     }
     $('#uhunt_widget_contest_status_' + series_index).html(status);
@@ -678,6 +678,10 @@ function init_series() {
       "black 860236",
       "black 860233",
       "black 860237",
+      "black 860245",
+      "black 799126",
+      "black 860242",
+      "black 860243",
     ]
   );
   uhunt.observer.notify('ranklist_filter', true, true);
