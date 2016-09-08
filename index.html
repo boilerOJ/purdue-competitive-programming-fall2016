@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" ng-app="uHunt">
 <head>
@@ -111,8 +110,6 @@ var series = {
 <th style="font-size:13px">#9\
 <th style="font-size:13px">#10\
 <th style="font-size:13px">#11\
-<th style="font-size:13px">#12\
-<th style="font-size:13px">#13\
 </thead><tbody id="summary_tbody"></tbody></table>\
 ',
   "created_ts": 3423423,
@@ -151,6 +148,17 @@ var series = {
           {id: "732", hint: "Use a Stack to simulate the process"},
           {id: "11966", hint: ""},
           {id: "1232", hint: ""},
+        ],
+    },
+    {
+        "start_ts": 1472767200000,
+        "end_ts": 1572597599000,
+        "title": "Complete Search",
+        "description": "",
+        "problems": [
+          {id: "10041", hint: "2 for loops"},
+          {id: "10102", hint: "3 for loops"},
+          {id: "193", hint: ""},
         ],
     },
 ]
@@ -385,7 +393,22 @@ blue 258637\n\n\
       }
     }
     var arr = [], s = '';
-    for (var uid in users) if (users.hasOwnProperty(uid)) arr.push(users[uid]);
+
+    var conf = uhunt.db.get('uhunt_series_filter_uids');
+    var student_ids = [];
+    for (var user in conf) {
+      var id = conf[user].split(' ')[1];
+      student_ids.push(id);
+    }
+
+    for (var user in users) {
+      if (users[user] !== undefined && users[user].hasOwnProperty("uid")) {
+        if (student_ids.indexOf(users[user].uid) > -1) {
+          arr.push(users[user]);
+        }
+      }
+    }
+
     arr.sort(total_cmp);
     for (var i = 0; i < arr.length; i++) {
       var u = arr[i];
